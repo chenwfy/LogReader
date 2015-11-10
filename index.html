@@ -1,0 +1,60 @@
+﻿<!doctype html>
+<html>
+<head>
+    <meta http-equiv=Content-Type content="text/html; charset=utf-8">
+    <title>Node.js First Test App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font: 12px;
+            font-family: Microsoft YaHei;
+            background: #000;
+            color: #FEFEFE;
+            padding: 10px;
+        }
+        #wrap {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript">
+        var socket = io();
+        var msgCount = 0;
+
+        $(function () {
+            socket.on('message', function (msg) {
+                if (msgCount < 100) {
+                    $('#wrap').append(msg);
+                    msgCount++;
+                    setScrollTop();
+                } else {
+                    $('#wrap').html(msg);
+                    msgCount = 0;
+                    setScrollTop();
+                }                
+            });
+            socket.on('disconnect', function () {});
+        });
+
+        var setScrollTop = function () {
+            var wrapHeight = $('#wrap').height();
+            var winHeight = $(window).height();
+            $(window).scrollTop(wrapHeight - winHeight + 20);
+        };
+
+        window.onunload = function () {
+            socket.disconnect();
+        };
+
+        window.onresize = setScrollTop;
+    </script>
+</head>
+<body>
+    <div id="wrap"></div>
+</body>
+</html>
